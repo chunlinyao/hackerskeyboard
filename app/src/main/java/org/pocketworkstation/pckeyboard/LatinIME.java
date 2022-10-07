@@ -16,6 +16,7 @@
 
 package org.pocketworkstation.pckeyboard;
 
+import android.view.*;
 import org.pocketworkstation.pckeyboard.LatinIMEUtil.RingCharBuffer;
 
 import com.google.android.voiceime.VoiceRecognitionTrigger;
@@ -52,13 +53,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.PrintWriterPrinter;
 import android.util.Printer;
-import android.view.HapticFeedbackConstants;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
@@ -1505,14 +1499,16 @@ public class LatinIME extends InputMethodService implements
 
     private void sendKeyDown(InputConnection ic, int key, int meta) {
         long now = System.currentTimeMillis();
+        int scanCode = ScanCodeMapper.scanCodeFromKeyCode(key);
         if (ic != null) ic.sendKeyEvent(new KeyEvent(
-                now, now, KeyEvent.ACTION_DOWN, key, 0, meta));
+                now, now, KeyEvent.ACTION_DOWN, key, 0, meta, KeyCharacterMap.VIRTUAL_KEYBOARD, scanCode, KeyEvent.FLAG_FROM_SYSTEM));
     }
 
     private void sendKeyUp(InputConnection ic, int key, int meta) {
         long now = System.currentTimeMillis();
+        int scanCode = ScanCodeMapper.scanCodeFromKeyCode(key);
         if (ic != null) ic.sendKeyEvent(new KeyEvent(
-                now, now, KeyEvent.ACTION_UP, key, 0, meta));
+                now, now, KeyEvent.ACTION_UP, key, 0, meta, KeyCharacterMap.VIRTUAL_KEYBOARD, scanCode, KeyEvent.FLAG_FROM_SYSTEM));
     }
 
     private void sendModifiedKeyDownUp(int key, boolean shifted) {
@@ -1555,7 +1551,7 @@ public class LatinIME extends InputMethodService implements
         if (isDown) {
             sendKeyDown(ic, key, meta);
         } else {
-            sendKeyUp(ic, key, meta);
+            sendKeyUp(ic, key, 0);
         }
     }
 
@@ -1568,7 +1564,7 @@ public class LatinIME extends InputMethodService implements
         if (isDown) {
             sendKeyDown(ic, key, meta);
         } else {
-            sendKeyUp(ic, key, meta);
+            sendKeyUp(ic, key, 0);
         }
     }
 
@@ -1581,7 +1577,7 @@ public class LatinIME extends InputMethodService implements
         if (isDown) {
             sendKeyDown(ic, key, meta);
         } else {
-            sendKeyUp(ic, key, meta);
+            sendKeyUp(ic, key, 0);
         }
     }
 
@@ -1594,7 +1590,7 @@ public class LatinIME extends InputMethodService implements
         if (isDown) {
             sendKeyDown(ic, key, meta);
         } else {
-            sendKeyUp(ic, key, meta);
+            sendKeyUp(ic, key, 0);
         }
     }
 
